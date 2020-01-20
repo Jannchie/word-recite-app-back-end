@@ -1,17 +1,15 @@
 package com.jannchie.word.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.jannchie.word.constant.ResultEnum;
-import com.jannchie.word.model.Result;
-
+import com.jannchie.word.model.Word;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,20 +25,20 @@ public class WordController {
     private MongoTemplate mongoTemplate;
 
     @RequestMapping(method = RequestMethod.GET, value = "/api/word/list")
-    public ResponseEntity<List<Map>> listWords(@RequestParam(name = "p") Integer page,
-            @RequestParam(name = "ps") Integer pageSize,
-            @RequestParam(name = "kw", defaultValue = "") String keyword) {
-        
-        return ResponseEntity.ok(mongoTemplate
-                .find(new Query(new Criteria().orOperator(Criteria.where("word").is(keyword),
-                        Criteria.where("sw").regex(keyword)))
-                                .with(PageRequest.of(page - 1, pageSize)),
-                        Map.class, "word"));
+    public ResponseEntity<List<Word>> listWords(@RequestParam(name = "p") Integer page,
+                                                @RequestParam(name = "ps") Integer pageSize,
+                                                @RequestParam(name = "kw", defaultValue = "") String keyword) {
+        List<Word> result = mongoTemplate.find(Query.query(TextCriteria.forDefaultLanguage().matchingAny(keyword.split(" "))).with(PageRequest.of(page, pageSize)), Word.class);
+        Word w = mongoTemplate.findOne(Query.query(Criteria.where("word").is(keyword)), Word.class);
+        if (w != null) {
+            result.add(0, w);
+        }
+        return ResponseEntity.ok(result);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/api/word")
-    public Map searchWord(@RequestParam(name = "word") String word) {
-        return mongoTemplate.findOne(Query.query(Criteria.where("word").is(word)), Map.class,
+    @RequestMapping(method = RequestMethod.GET, value = "/api/word/detail")
+    public Word searchWord(@RequestParam(name = "word") String word) {
+        return mongoTemplate.findOne(Query.query(Criteria.where("word").is(word)), Word.class,
                 "word");
     }
 }
