@@ -2,9 +2,11 @@ package com.jannchie.word.model;
 
 import com.jannchie.word.constant.ResultEnum;
 
+/**
+ * @author Jannchie
+ */
 public class Result {
     private String msg;
-
     public Result(String msg) {
         this.msg = msg;
     }
