@@ -17,6 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * @author Jannchie
+ */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -25,9 +28,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(final HttpSecurity http) throws Exception {
         http.rememberMe().alwaysRemember(true).and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers( "/api/login","/api/logout").permitAll().anyRequest().authenticated()
+                .antMatchers( "/api/user/login").permitAll().anyRequest().authenticated()
                 .and().logout().permitAll();
 
     }
+
+
 
 }
