@@ -18,13 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * user
+ * @author Jannchie
  */
 @RestController
+@RequestMapping(value = "/api/word")
 public class WordController {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    @RequestMapping(method = RequestMethod.GET, value = "/api/word/list")
+    @RequestMapping(method = RequestMethod.GET, value = "/list")
     public ResponseEntity<List<Word>> listWords(@RequestParam(name = "p") Integer page,
                                                 @RequestParam(name = "ps") Integer pageSize,
                                                 @RequestParam(name = "kw", defaultValue = "") String keyword) {
@@ -36,7 +38,7 @@ public class WordController {
         return ResponseEntity.ok(result);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/api/word/detail")
+    @RequestMapping(method = RequestMethod.GET, value = "/detail")
     public Word searchWord(@RequestParam(name = "word") String word) {
         return mongoTemplate.findOne(Query.query(Criteria.where("word").is(word)), Word.class,
                 "word");
