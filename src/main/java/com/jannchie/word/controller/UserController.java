@@ -106,7 +106,7 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/wordList/notReciteWord")
-    public List<Word> addMyWordList(@RequestParam(name = "id") String id, @RequestParam(name = "size",defaultValue = "20") Integer size) {
+    public List<Word> listNotReciteWords(@RequestParam(name = "id") String id, @RequestParam(name = "size",defaultValue = "20") Integer size) {
         Query q = Query.query(Criteria.where("_id").is(id));
         Set<Integer> recitedWordIds = mongoTemplate.find(Query.query(Criteria.where("username").is(UserUtils.getUsername())), ReciteRecord.class).stream().map(ReciteRecord::getWordId).collect(Collectors.toSet());
         AggregationResults<Word> ar = mongoTemplate.aggregate(Aggregation.newAggregation(

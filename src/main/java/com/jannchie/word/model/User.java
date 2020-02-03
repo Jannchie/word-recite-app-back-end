@@ -46,12 +46,7 @@ public class User {
 
     public void setExp(Integer exp) {
         this.exp = exp;
-    }
-
-    public User() {
-    }
-
-    public User(String username, String password) {
+    }    public User(String username, String password) {
         this.username = username;
         this.password = password;
         this.exp = 0;
