@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Jannchie
@@ -19,7 +20,7 @@ public class User {
     private String username;
     private String password;
     private Integer exp;
-    private List<ObjectId> myWordList;
+    private List<WordList> myWordList;
     public String getUid(){
         return id.toString();
     }
@@ -28,11 +29,11 @@ public class User {
         return id;
     }
 
-    public List<ObjectId> getMyWordList() {
+    public List<WordList> getMyWordList() {
         return myWordList;
     }
 
-    public void setMyWordList(List<ObjectId> myWordList) {
+    public void setMyWordList(List<WordList> myWordList) {
         this.myWordList = myWordList;
     }
 
@@ -46,7 +47,8 @@ public class User {
 
     public void setExp(Integer exp) {
         this.exp = exp;
-    }    public User(String username, String password) {
+    }
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
         this.exp = 0;
