@@ -1,13 +1,12 @@
 package com.jannchie.word.object;
 
 import org.hibernate.validator.constraints.Length;
-import org.springframework.context.annotation.Bean;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+/**
+ * @author Jannchie
+ */
 public class LoginForm {
     @NotNull
     @Length(max = 12, min = 2)

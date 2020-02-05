@@ -1,4 +1,13 @@
+server:
+  port: 8081
+  servlet:
+    session:
+      cookie:
+        max-age: 86400000000
+
 spring:
+  mvc:
+    dispatch-options-request: true
   data:
     mongodb:
       host: localhost
