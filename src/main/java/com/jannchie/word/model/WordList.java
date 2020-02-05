@@ -5,8 +5,6 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,6 +20,15 @@ public class WordList {
     private List<Integer> wordList;
     private String creator;
     private String creatorId;
+    private Info info;
+
+    public Info getInfo() {
+        return info;
+    }
+
+    public void setInfo(Info info) {
+        this.info = info;
+    }
 
     public WordList() {
     }
@@ -78,4 +85,52 @@ public class WordList {
         return id.toString();
     }
 
+    public static class Info {
+        private Integer mastered;
+        private Integer reciting;
+        private Integer count;
+
+        public Info(Integer count, int mastered, int reciting) {
+            this.count = count;
+            this.mastered = mastered;
+            this.reciting = reciting;
+        }
+
+        public Info(int mastered, int reciting) {
+            this.mastered = mastered;
+            this.reciting = reciting;
+        }
+
+        public Info(Integer count) {
+            this.count = count;
+        }
+
+        public Integer getReciting() {
+            return reciting;
+        }
+
+        public void setReciting(Integer reciting) {
+            this.reciting = reciting;
+        }
+
+
+        public Info() {
+        }
+
+        public Integer getMastered() {
+            return mastered;
+        }
+
+        public void setMastered(Integer mastered) {
+            this.mastered = mastered;
+        }
+
+        public Integer getCount() {
+            return count;
+        }
+
+        public void setCount(Integer count) {
+            this.count = count;
+        }
+    }
 }
