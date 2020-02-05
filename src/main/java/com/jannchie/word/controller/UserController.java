@@ -5,7 +5,6 @@ import com.jannchie.word.model.*;
 import com.jannchie.word.object.LoginForm;
 import com.jannchie.word.security.UserAuthenticationProvider;
 import com.jannchie.word.utils.UserUtils;
-import com.mongodb.client.result.UpdateResult;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -55,14 +54,19 @@ public class UserController {
     @RequestMapping(method = RequestMethod.POST, value = "/login")
     public ResultResponseEntity<User> login(@Valid @RequestBody LoginForm data) {
         try {
-            Authentication request = new UsernamePasswordAuthenticationToken(data.getUsername(),
-                    data.getPassword());
-            Authentication result = userAuthenticationProvider.authenticate(request);
-            SecurityContextHolder.getContext().setAuthentication(result);
+            User user = getSignedUser(data);
+            return new ResultResponseEntity<>(ResultEnum.LOGIN_SUCCEED, user);
         } catch (AuthenticationException e) {
             return new ResultResponseEntity<>(ResultEnum.LOGIN_FAILED);
         }
-        return new ResultResponseEntity<>(ResultEnum.LOGIN_SUCCEED, this.getInfo());
+    }
+
+    private User getSignedUser(@RequestBody @Valid LoginForm data) {
+        Authentication request = new UsernamePasswordAuthenticationToken(data.getUsername(),
+                data.getPassword());
+        Authentication result = userAuthenticationProvider.authenticate(request);
+        SecurityContextHolder.getContext().setAuthentication(result);
+        return this.getInfo();
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/info")
@@ -80,8 +84,7 @@ public class UserController {
         } else {
             return new ResultResponseEntity<>(ResultEnum.USER_ALREADY_EXIST);
         }
-        this.login(data);
-        return new ResultResponseEntity<>(ResultEnum.SIGN_IN_SUCCEED);
+        return new ResultResponseEntity<>(ResultEnum.SIGN_IN_SUCCEED, getSignedUser(data));
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/logout")
@@ -114,7 +117,7 @@ public class UserController {
         Query q = Query.query(Criteria.where("_id").is(lid));
         if (mongoTemplate.exists(q, WordList.class)) {
             mongoTemplate.updateFirst(Query.query(Criteria.where("username").is(username)), new Update().addToSet("myWordList", lid), User.class);
-            return new ResultResponseEntity<>(ResultEnum.SUCCEED, UserUtils.getWordListDataByLid(username,lid));
+            return new ResultResponseEntity<>(ResultEnum.SUCCEED, UserUtils.getWordListDataByLid(username, lid));
         } else {
             return new ResultResponseEntity<>(ResultEnum.WORD_LIST_CANNOT_FOUND);
         }
