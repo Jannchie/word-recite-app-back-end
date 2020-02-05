@@ -1,21 +1,14 @@
 package com.jannchie.word.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jannchie.word.model.Result;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
+import javax.annotation.Resource;
 
 /**
  * @author Jannchie
@@ -26,13 +19,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        http.rememberMe().alwaysRemember(true).and().csrf().disable()
+        http.csrf().disable()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                 .antMatchers( "/api/user/login").permitAll().anyRequest().authenticated()
                 .and().logout().permitAll();
 
     }
-
-
-
 }
