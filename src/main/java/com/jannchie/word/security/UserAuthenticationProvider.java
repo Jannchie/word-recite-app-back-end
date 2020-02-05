@@ -6,6 +6,7 @@ import java.util.Collection;
 import com.jannchie.word.constant.ResultEnum;
 import com.jannchie.word.model.User;
 
+import com.jannchie.word.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -19,12 +20,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author Jannchie
+ */
 @Component
 public class UserAuthenticationProvider implements AuthenticationProvider {
 
 
-    private MongoTemplate mongoTemplate;
-    private BCryptPasswordEncoder bcryptPasswordEncoder;
+    private final MongoTemplate mongoTemplate;
+    private final BCryptPasswordEncoder bcryptPasswordEncoder;
 
     @Autowired
     public UserAuthenticationProvider(MongoTemplate mongoTemplate) {
@@ -36,7 +40,8 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) {
         String name = authentication.getPrincipal().toString();
         String password = authentication.getCredentials().toString();
-        User user = mongoTemplate.findOne(Query.query(Criteria.where("username").is(name)), User.class);
+
+        User user = UserUtils.getUserByUsername(name);
         if (user != null && bcryptPasswordEncoder.matches(password,user.getPassword())) {
             Collection<GrantedAuthority> authorityCollection = new ArrayList<>();
             authorityCollection.add(new SimpleGrantedAuthority("USER"));
