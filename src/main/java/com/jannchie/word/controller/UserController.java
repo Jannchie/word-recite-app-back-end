@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -137,10 +138,12 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET, value = "/wordList/notReciteWord")
     public List<Word> listNotReciteWords(@RequestParam(name = "id") String id, @RequestParam(name = "size", defaultValue = "20") Integer size) {
         Query q = Query.query(Criteria.where("_id").is(id));
+        Set<Integer> notReciteInList = Objects.requireNonNull(mongoTemplate.findOne(q, WordList.class)).getWordList();
+
         Set<Integer> recitedWordIds = mongoTemplate.find(Query.query(Criteria.where("username").is(getUsername())), ReciteRecord.class).stream().map(ReciteRecord::getWordId).collect(Collectors.toSet());
         AggregationResults<Word> ar = mongoTemplate.aggregate(Aggregation.newAggregation(
                 Aggregation.unwind("wordList"),
-                Aggregation.match(Criteria.where("wordList").nin(
+                Aggregation.match(Criteria.where("wordList").in(notReciteInList).nin(
                         recitedWordIds
                 )),
                 Aggregation.lookup("word", "wordList", "id", "word"),

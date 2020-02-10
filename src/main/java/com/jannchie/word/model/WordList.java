@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Jannchie
@@ -17,7 +18,7 @@ public class WordList {
     private ObjectId id;
     private String name;
     private String desc;
-    private List<Integer> wordList;
+    private Set<Integer> wordList;
     private String creator;
     private String creatorId;
     private Info info;
@@ -49,11 +50,11 @@ public class WordList {
         this.desc = desc;
     }
 
-    public List<Integer> getWordList() {
+    public Set<Integer> getWordList() {
         return wordList;
     }
 
-    public void setWordList(List<Integer> wordList) {
+    public void setWordList(Set<Integer> wordList) {
         this.wordList = wordList;
     }
 

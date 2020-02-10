@@ -4,14 +4,12 @@ server:
     session:
       cookie:
         max-age: 86400000000
-
 spring:
   mvc:
     dispatch-options-request: true
   data:
     mongodb:
-      host: localhost
-      database: word
+      uri: ${WORD_MONGO_URL}
   session:
     store-type: mongodb
     timeout: 2592000

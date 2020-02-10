@@ -15,6 +15,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -28,21 +32,32 @@ public class WordListController {
 
 
 
-    @RequestMapping(method = RequestMethod.GET, value = "/create/toefl")
+    @RequestMapping(method = RequestMethod.GET, value = "/create/tag")
     public ResultResponseEntity<?> createToeflList(){
-        WordList wordList =  mongoTemplate.aggregate(Aggregation.newAggregation(
-                Aggregation.match(Criteria.where("tag").is("toefl")),
-                Aggregation.group().addToSet("id").as("wordList")
-        ),Word.class, WordList.class).getUniqueMappedResult();
-        if (wordList == null)
-        {
-            wordList = new WordList();
-        }
-        wordList.setDesc("无");
-        wordList.setCreatorId(UserUtils.getUser().getId().toString());
-        wordList.setCreator(UserUtils.getUser().getUsername());
-        wordList.setName("托福常用词");
-        mongoTemplate.save(wordList);
+        ArrayList<ArrayList<String>> list = new ArrayList<>();
+//        list.add(new ArrayList<>(Arrays.asList("zk","预设中考词汇")));
+//        list.add(new ArrayList<>(Arrays.asList("gk","预设高考词汇")));
+//        list.add(new ArrayList<>(Arrays.asList("cet4","预设四级词汇")));
+//        list.add(new ArrayList<>(Arrays.asList("cet6","预设六级词汇")));
+//        list.add(new ArrayList<>(Arrays.asList("gre","预设GRE词汇")));
+//        list.add(new ArrayList<>(Arrays.asList("ky","预设考研词汇")));
+//        list.add(new ArrayList<>(Arrays.asList("ielts","预设雅思词汇")));
+//        list.add(new ArrayList<>(Arrays.asList("toefl","预设托福词汇")));
+        list.forEach((a)->{
+            WordList wordList =  mongoTemplate.aggregate(Aggregation.newAggregation(
+                    Aggregation.match(Criteria.where("tag").is(a.get(0))),
+                    Aggregation.group().addToSet("id").as("wordList")
+            ),Word.class, WordList.class).getUniqueMappedResult();
+            if (wordList == null)
+            {
+                wordList = new WordList();
+            }
+            wordList.setDesc("初始生成的词汇书");
+            wordList.setCreatorId(UserUtils.getUser().getId().toString());
+            wordList.setCreator(UserUtils.getUser().getUsername());
+            wordList.setName(a.get(1));
+            mongoTemplate.save(wordList);
+        });
         return new ResultResponseEntity<>(ResultEnum.SUCCEED);
     }
 
