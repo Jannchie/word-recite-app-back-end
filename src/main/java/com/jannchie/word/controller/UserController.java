@@ -51,6 +51,11 @@ public class UserController {
         this.bcryptPasswordEncoder = new BCryptPasswordEncoder();
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/settings")
+    public ResultResponseEntity<?> postSettings(@RequestBody User.Settings settings){
+        mongoTemplate.updateFirst(Query.query(Criteria.where("username").is(UserUtils.getUsername())),new Update().set("settings",settings),User.class);
+        return new ResultResponseEntity<>(ResultEnum.SUCCEED);
+    }
 
     @RequestMapping(method = RequestMethod.POST, value = "/login")
     public ResultResponseEntity<User> login(@Valid @RequestBody LoginForm data) {
@@ -201,4 +206,5 @@ public class UserController {
                 ), ReciteRecord.class, Word.class
         ).getMappedResults();
     }
+
 }

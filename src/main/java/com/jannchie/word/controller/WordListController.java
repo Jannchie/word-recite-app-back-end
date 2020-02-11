@@ -35,14 +35,14 @@ public class WordListController {
     @RequestMapping(method = RequestMethod.GET, value = "/create/tag")
     public ResultResponseEntity<?> createToeflList(){
         ArrayList<ArrayList<String>> list = new ArrayList<>();
-//        list.add(new ArrayList<>(Arrays.asList("zk","预设中考词汇")));
-//        list.add(new ArrayList<>(Arrays.asList("gk","预设高考词汇")));
-//        list.add(new ArrayList<>(Arrays.asList("cet4","预设四级词汇")));
-//        list.add(new ArrayList<>(Arrays.asList("cet6","预设六级词汇")));
-//        list.add(new ArrayList<>(Arrays.asList("gre","预设GRE词汇")));
-//        list.add(new ArrayList<>(Arrays.asList("ky","预设考研词汇")));
-//        list.add(new ArrayList<>(Arrays.asList("ielts","预设雅思词汇")));
-//        list.add(new ArrayList<>(Arrays.asList("toefl","预设托福词汇")));
+        // list.add(new ArrayList<>(Arrays.asList("zk","预设中考词汇")));
+        // list.add(new ArrayList<>(Arrays.asList("gk","预设高考词汇")));
+        // list.add(new ArrayList<>(Arrays.asList("cet4","预设四级词汇")));
+        // list.add(new ArrayList<>(Arrays.asList("cet6","预设六级词汇")));
+        // list.add(new ArrayList<>(Arrays.asList("gre","预设GRE词汇")));
+        // list.add(new ArrayList<>(Arrays.asList("ky","预设考研词汇")));
+        // list.add(new ArrayList<>(Arrays.asList("ielts","预设雅思词汇")));
+        // list.add(new ArrayList<>(Arrays.asList("toefl","预设托福词汇")));
         list.forEach((a)->{
             WordList wordList =  mongoTemplate.aggregate(Aggregation.newAggregation(
                     Aggregation.match(Criteria.where("tag").is(a.get(0))),
