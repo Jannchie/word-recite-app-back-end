@@ -91,6 +91,9 @@ public class User {
         }
 
         public Settings() {
+            this.dark = false;
+            this.autoPlayAudio = true;
+            this.wordsOfRound = 20;
         }
 
         public Boolean getDark() {
@@ -130,6 +133,7 @@ public class User {
         private Integer mastered;
         private Integer reciting;
         private Date updateDate;
+
 
         public Date getUpdateDate() {
             return updateDate;

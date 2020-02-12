@@ -78,7 +78,6 @@ public class UserController {
     @RequestMapping(method = RequestMethod.GET, value = "/info")
     public User getInfo() {
         User user = UserUtils.getUser();
-        LoginForm lf = new LoginForm();
         user.setPassword(null);
         return user;
     }
