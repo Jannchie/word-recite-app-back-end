@@ -1,13 +1,12 @@
 package com.jannchie.word.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Jannchie
@@ -21,6 +20,7 @@ public class User {
     private String password;
     private Integer exp;
     private List<WordList> myWordList;
+    private List<ReciteStatistic> reciteStatistics;
     public String getUid(){
         return id.toString();
     }
@@ -115,6 +115,44 @@ public class User {
 
         public void setWordsOfRound(Integer wordsOfRound) {
             this.wordsOfRound = wordsOfRound;
+        }
+    }
+
+    public List<ReciteStatistic> getReciteStatistics() {
+        return reciteStatistics;
+    }
+
+    public void setReciteStatistics(List<ReciteStatistic> reciteStatistics) {
+        this.reciteStatistics = reciteStatistics;
+    }
+
+    public static class ReciteStatistic {
+        private Integer mastered;
+        private Integer reciting;
+        private Date updateDate;
+
+        public Date getUpdateDate() {
+            return updateDate;
+        }
+
+        public void setUpdateDate(Date updateDate) {
+            this.updateDate = updateDate;
+        }
+
+        public Integer getMastered() {
+            return mastered;
+        }
+
+        public void setMastered(Integer mastered) {
+            this.mastered = mastered;
+        }
+
+        public Integer getReciting() {
+            return reciting;
+        }
+
+        public void setReciting(Integer reciting) {
+            this.reciting = reciting;
         }
     }
 }

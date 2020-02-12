@@ -1,16 +1,12 @@
 package com.jannchie.word.utils;
 
-import com.jannchie.word.constant.ResultEnum;
-import com.jannchie.word.model.BusinessException;
 import com.jannchie.word.model.ReciteRecord;
 import com.jannchie.word.model.User;
 import com.jannchie.word.model.WordList;
-import jdk.nashorn.internal.objects.annotations.Where;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationExpression;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
