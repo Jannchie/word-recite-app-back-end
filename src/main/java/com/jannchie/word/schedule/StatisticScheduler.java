@@ -49,18 +49,18 @@ public class StatisticScheduler {
                 } else if (id == 0) {
                     urs.setReciting(count);
                 }
-                boolean needRecord =
-                        user.getReciteStatistics() == null || user.getReciteStatistics().isEmpty()
-                                || (!user.getReciteStatistics().get(0).getMastered().equals(urs.getMastered())
-                                && !user.getReciteStatistics().get(0).getReciting().equals(urs.getReciting()));
-                if (needRecord) {
-                    urs.setUpdateDate(Calendar.getInstance().getTime());
-                    mongoTemplate.updateFirst(
-                            Query.query(Criteria.where("username").is(user.getUsername())),
-                            new Update().push("reciteStatistics").atPosition(0).value(urs),
-                            User.class);
-                }
             });
+            boolean needRecord =
+                    user.getReciteStatistics() == null || user.getReciteStatistics().isEmpty()
+                            || (!user.getReciteStatistics().get(0).getMastered().equals(urs.getMastered())
+                            && !user.getReciteStatistics().get(0).getReciting().equals(urs.getReciting()));
+            if (needRecord) {
+                urs.setUpdateDate(Calendar.getInstance().getTime());
+                mongoTemplate.updateFirst(
+                        Query.query(Criteria.where("username").is(user.getUsername())),
+                        new Update().push("reciteStatistics").atPosition(0).value(urs),
+                        User.class);
+            }
         }
     }
 }
