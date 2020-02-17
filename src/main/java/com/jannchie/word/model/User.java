@@ -1,5 +1,6 @@
 package com.jannchie.word.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -21,7 +22,8 @@ public class User {
     private Integer exp;
     private List<WordList> myWordList;
     private List<ReciteStatistic> reciteStatistics;
-    public String getUid(){
+
+    public String getUid() {
         return id.toString();
     }
 
@@ -48,6 +50,7 @@ public class User {
     public void setExp(Integer exp) {
         this.exp = exp;
     }
+
     public User(String username, String password) {
         this.username = username;
         this.password = password;
@@ -69,6 +72,7 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
     private Settings settings;
 
     public Settings getSettings() {
@@ -79,10 +83,22 @@ public class User {
         this.settings = settings;
     }
 
-    public static class Settings{
+    public static class Settings {
         private Boolean dark;
         private Boolean autoPlayAudio;
+        private Boolean randomStudyList;
         private Integer wordsOfRound;
+
+        public Settings() {
+            this.dark = false;
+            this.autoPlayAudio = true;
+            this.randomStudyList = false;
+            this.wordsOfRound = 20;
+        }
+
+        public Boolean getRandomStudyList() {
+            return randomStudyList;
+        }
 
         public Settings(Boolean dark, Boolean autoPlayAudio, Integer wordsOfRound) {
             this.dark = dark;
@@ -90,10 +106,8 @@ public class User {
             this.wordsOfRound = wordsOfRound;
         }
 
-        public Settings() {
-            this.dark = false;
-            this.autoPlayAudio = true;
-            this.wordsOfRound = 20;
+        public void setRandomStudyList(Boolean randomStudyList) {
+            this.randomStudyList = randomStudyList;
         }
 
         public Boolean getDark() {
@@ -132,6 +146,7 @@ public class User {
     public static class ReciteStatistic {
         private Integer mastered;
         private Integer reciting;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
         private Date updateDate;
 
 
