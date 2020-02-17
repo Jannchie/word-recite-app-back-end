@@ -158,6 +158,24 @@ public class UserController {
         return ar.getMappedResults();
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/wordList/reviewWord")
+    public List<ReciteRecord> listReviewWord(@RequestParam(name = "id") String id) {
+        User user = UserUtils.getUser();
+        Integer size = user.getSettings().getWordsOfRound();
+        if (size == -1) {
+            size = 30;
+        }
+        AggregationResults<ReciteRecord> ar = mongoTemplate.aggregate(
+                Aggregation.newAggregation(
+                        Aggregation.match(Criteria.where("username").is(user.getUsername()).and("skillExp").lt(100)),
+                        Aggregation.lookup("word", "wordId", "id", "word"),
+                        Aggregation.unwind("word"),
+                        Aggregation.limit(size)
+                ), ReciteRecord.class, ReciteRecord.class
+        );
+        return ar.getMappedResults();
+    }
+
     @RequestMapping(method = RequestMethod.POST, value = "/word/{id}/master")
     public ResultResponseEntity<?> setMasteredWord(@PathVariable Integer id) {
         mongoTemplate.upsert(Query.query(Criteria.where("username").is(getUsername()).and("wordId").is(id)), Update.update("skillExp", 100).currentDate("lastReciteTime"), ReciteRecord.class);
