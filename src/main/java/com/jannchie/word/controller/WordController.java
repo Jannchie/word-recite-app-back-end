@@ -1,9 +1,11 @@
 package com.jannchie.word.controller;
 
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
+import com.jannchie.word.model.ReciteRecord;
 import com.jannchie.word.model.Word;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -27,15 +29,23 @@ public class WordController {
     private MongoTemplate mongoTemplate;
 
     @RequestMapping(method = RequestMethod.GET, value = "/list")
-    public ResponseEntity<List<Word>> listWords(@RequestParam(name = "p") Integer page,
-                                                @RequestParam(name = "ps") Integer pageSize,
-                                                @RequestParam(name = "kw", defaultValue = "") String keyword) {
+    public ResponseEntity<List<ReciteRecord>> listWords(@RequestParam(name = "p") Integer page,
+                                                        @RequestParam(name = "ps") Integer pageSize,
+                                                        @RequestParam(name = "kw", defaultValue = "") String keyword) {
         List<Word> result = mongoTemplate.find(Query.query(TextCriteria.forDefaultLanguage().matchingAny(keyword.split(" "))).with(PageRequest.of(page, pageSize)), Word.class);
         Word w = mongoTemplate.findOne(Query.query(Criteria.where("word").is(keyword)), Word.class);
         if (w != null) {
             result.add(0, w);
         }
-        return ResponseEntity.ok(result);
+        List<ReciteRecord> reciteRecords = result.stream().map((word)->{
+            ReciteRecord reciteRecord =  new ReciteRecord();
+            reciteRecord.setWord(word);
+            reciteRecord.setLastReciteTime(null);
+            reciteRecord.setId(ObjectId.get());
+            reciteRecord.setSkillExp(0);
+            return reciteRecord;
+        }).collect(Collectors.toList());
+        return ResponseEntity.ok(reciteRecords);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/detail")

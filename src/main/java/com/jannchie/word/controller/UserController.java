@@ -52,8 +52,8 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/settings")
-    public ResultResponseEntity<?> postSettings(@RequestBody User.Settings settings){
-        mongoTemplate.updateFirst(Query.query(Criteria.where("username").is(UserUtils.getUsername())),new Update().set("settings",settings),User.class);
+    public ResultResponseEntity<?> postSettings(@RequestBody User.Settings settings) {
+        mongoTemplate.updateFirst(Query.query(Criteria.where("username").is(UserUtils.getUsername())), new Update().set("settings", settings), User.class);
         return new ResultResponseEntity<>(ResultEnum.SUCCEED);
     }
 
@@ -158,18 +158,36 @@ public class UserController {
         return ar.getMappedResults();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/wordList/reviewWord")
-    public List<ReciteRecord> listReviewWord(@RequestParam(name = "id") String id) {
+    @RequestMapping(method = RequestMethod.GET, value = "/wordList/review")
+    public List<ReciteRecord> listReviewWord(@RequestParam(name = "id") String id,
+                                             @RequestParam(name = "ps") Integer size,
+                                             @RequestParam(name = "p") Long page) {
         User user = UserUtils.getUser();
-        Integer size = user.getSettings().getWordsOfRound();
-        if (size == -1) {
-            size = 30;
-        }
         AggregationResults<ReciteRecord> ar = mongoTemplate.aggregate(
                 Aggregation.newAggregation(
                         Aggregation.match(Criteria.where("username").is(user.getUsername()).and("skillExp").lt(100)),
+                        Aggregation.sort(Sort.by(Sort.Direction.ASC, "lastReciteTime")),
                         Aggregation.lookup("word", "wordId", "id", "word"),
                         Aggregation.unwind("word"),
+                        Aggregation.skip(page * size),
+                        Aggregation.limit(size)
+                ), ReciteRecord.class, ReciteRecord.class
+        );
+        return ar.getMappedResults();
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/wordList/mastered")
+    public List<ReciteRecord> listMasteredWord(@RequestParam(name = "id") String id,
+                                               @RequestParam(name = "ps") Integer size,
+                                               @RequestParam(name = "p") Long page) {
+        User user = UserUtils.getUser();
+        AggregationResults<ReciteRecord> ar = mongoTemplate.aggregate(
+                Aggregation.newAggregation(
+                        Aggregation.match(Criteria.where("username").is(user.getUsername()).and("skillExp").gte(100)),
+                        Aggregation.sort(Sort.by(Sort.Direction.DESC, "lastReciteTime")),
+                        Aggregation.lookup("word", "wordId", "id", "word"),
+                        Aggregation.unwind("word"),
+                        Aggregation.skip(page * size),
                         Aggregation.limit(size)
                 ), ReciteRecord.class, ReciteRecord.class
         );
@@ -214,8 +232,8 @@ public class UserController {
         return mongoTemplate.aggregate(
                 Aggregation.newAggregation(
                         match,
-                        Aggregation.skip((page - 1) * pageSize),
                         Aggregation.sort(Sort.by(Sort.Direction.DESC, "lastReciteTime")),
+                        Aggregation.skip((page - 1) * pageSize),
                         Aggregation.limit(pageSize),
                         Aggregation.lookup("word", "wordId", "id", "word"),
                         Aggregation.unwind("word"),
